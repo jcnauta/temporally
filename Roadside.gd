@@ -7,7 +7,7 @@ func _init(waypoints):
   print (waypoints)
   
 func _draw():
-  print("drawn")
+  print("draw")
   for idx in range(len(waypoints)):
     var wp1 = waypoints[idx % len(waypoints)]
     var wp2 = waypoints[(idx + 1) % len(waypoints)]
