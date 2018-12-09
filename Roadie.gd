@@ -3,7 +3,7 @@ extends Node2D
 var Roadside = preload("res://Roadside.gd")
 
 var nWps = 10
-var radius = 200
+var radius = 2000
 var roadSize = 20
 
 
@@ -38,7 +38,6 @@ func wayPointsBorder(waypoints, side):
   var nextPoint
   var border = []
   for wp in range (nWps):
-    print("more border")
     prevPoint = waypoints[(wp + len(waypoints) - 1) % len(waypoints)]
     thisPoint = waypoints[wp % len(waypoints)]
     nextPoint = waypoints[(wp + 1) % len(waypoints)]
@@ -46,7 +45,6 @@ func wayPointsBorder(waypoints, side):
     var toPrev = (prevPoint - thisPoint).normalized()
     # Use cross product to decide which side to pick
     var turn = (-1 * toPrev.x) * toNext.y - (-1 * toPrev.y) * toNext.x
-    print (turn)
     var borderPoint = (toNext + toPrev).normalized() * roadSize
     if side == "right":
       if turn > 0.001:
