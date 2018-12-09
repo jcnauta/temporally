@@ -2,9 +2,9 @@ extends Node2D
 
 var Roadside = preload("res://Roadside.gd")
 
-var nWps = 10
+var nWps = 20
 var radius = 2000
-var roadSize = 20
+var roadSize = 200
 
 
 func _ready():
@@ -19,7 +19,7 @@ func _ready():
 # at random distances from it, which will be the parcours.
 func createWaypoints():
   var waypoints = []
-  var trackCenter = Vector2(200, 200)
+  var trackCenter = Vector2(1600, 200)
   var angle = 0
   var angles = []
   for wp in range (nWps):

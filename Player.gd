@@ -5,8 +5,12 @@ func control(delta):
   var tRight = Input.is_action_pressed('turnRight')
   if tLeft:
     turning = clamp(turning + turnSpeed * delta, -maxTurn, maxTurn) # set and limit steering wheel rotations
+  elif Input.is_action_just_released('turnLeft'):
+    turning = min(0.0, turning)
   if tRight:
     turning = clamp(turning - turnSpeed * delta, -maxTurn, maxTurn) # set and limit steering wheel rotations
+  elif Input.is_action_just_released('turnRight'):
+    turning = max(0.0, turning)
   turning -= 2 * turning * delta
   if Input.is_action_pressed('forward'):
     gas = gas + a * delta
