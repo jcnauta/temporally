@@ -40,16 +40,16 @@ static func triangulate(points):
   var xmid = (xmax + xmin) * 0.5
   var ymid = (ymax + ymin) * 0.5
   
-  var ExpandedXZ = Array()
+  var expandedPoints = Array()
   i = 0
   while(i < points.size()):
     var v = points[i]
-    ExpandedXZ.append(Vector2(v.x, v.y))
+    expandedPoints.append(Vector2(v.x, v.y))
     i += 1
   
-  ExpandedXZ.append(Vector2((xmid - 2 * dmax), (ymid - dmax)))
-  ExpandedXZ.append(Vector2(xmid, (ymid + 2 * dmax)))
-  ExpandedXZ.append(Vector2((xmid + 2 * dmax), (ymid - dmax)))
+  expandedPoints.append(Vector2((xmid - 20 * dmax), (ymid - dmax)))
+  expandedPoints.append(Vector2(xmid, (ymid + 20 * dmax)))
+  expandedPoints.append(Vector2((xmid + 20 * dmax), (ymid - dmax)))
   
   var TriangleList = Array()
   TriangleList.append(Triangle.new(VertexCount, VertexCount + 1, VertexCount + 2));
@@ -59,7 +59,7 @@ static func triangulate(points):
     var ii2 = 0
     # Remove all triangles whose circumscribed circle contains the point
     while(ii2 < TriangleList.size()):
-      if (triangulatePolygonSubFunc_InCircle(ExpandedXZ[ii1], ExpandedXZ[TriangleList[ii2].p1], ExpandedXZ[TriangleList[ii2].p2], ExpandedXZ[TriangleList[ii2].p3])):
+      if (triangulatePolygonSubFunc_InCircle(expandedPoints[ii1], expandedPoints[TriangleList[ii2].p1], expandedPoints[TriangleList[ii2].p2], expandedPoints[TriangleList[ii2].p3])):
         Edges.append(Edge.new(TriangleList[ii2].p1, TriangleList[ii2].p2));
         Edges.append(Edge.new(TriangleList[ii2].p2, TriangleList[ii2].p3));
         Edges.append(Edge.new(TriangleList[ii2].p3, TriangleList[ii2].p1));
