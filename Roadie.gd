@@ -79,19 +79,17 @@ func createWaypoints2(nWps):
       var minDist = 0.1 * side / sqrt(nWps) # always possible to place point
       for i in range(nWps):
         # regenerate points if they are too close to another
-        var tooClose = true
+        var tooClose = true;
+        var newPoint;
         while tooClose:
-          var newPoint = Vector2(randf() * side, randf() * side)
+          newPoint = Vector2(randf() * side, randf() * side)
           tooClose = false
           for j in points.size():
             if newPoint.distance_to(points[j]) < minDist:
               tooClose = true
               break
-          
-        points.append(Vector2(randf() * side, randf() * side))
-  #    triang = Geometry.triangulate_polygon(points)
-      triang = Delauney.do_delaunay(points)
-  #    triangCopy = Geometry.triangulate_polygon(points)
+        points.append(newPoint)
+      triang = Delauney.triangulate(points)
     boundary = Geometry.convex_hull_2d(points)
     boundary.remove(boundary.size() - 1) # remove the last element, which is identical to the first
   
@@ -142,30 +140,23 @@ func createWaypoints2(nWps):
             tr += 1
             continue
           # check if the newly found index is not already in the boundary
-  
           var mayAdd = true
           for already in bIdxs:
             if newIdx == already:
               mayAdd = false
               break
-  
           if mayAdd: # remove triangle and add new point to boundary
             triang.remove(tr)
             bIdxs.insert((idxInBoundary + 1) % bIdxs.size(), newIdx)
             removedTriangle = true
-  #          print("added " + str(newIdx))
-            break;
-          else: # the triangle of this edge can not be reduced, the third point is already on the path
-  #          print(str(newIdx) + " already present! Nr of steps: " + str(nrOfSteps))
-            break
-        idxInBoundary = (idxInBoundary + 1) % bIdxs.size() # in case no matching triangle was found for removal, go to next edge 
+          break # We found the triangle for this edge (did not continue above), so break.
+        # just in case no matching triangle was found for removal, go to next edge 
+        idxInBoundary = (idxInBoundary + 1) % bIdxs.size()
         nrOfSteps += 1
         if nrOfSteps == bIdxs.size():
+          # We traversed the boundary without finding another point to remove. Something is wrong.
           failure = true
           break
-  #        debugging = true
-  #        return bIdxs 
-  #    print("bidxsize " + str(bIdxs.size()))
   if !failure:
     return bIdxs
     
