@@ -4,12 +4,13 @@
 [ext_resource path="res://Roadie.gd" type="Script" id=2]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=3]
 
-[node name="Spatial" type="Node2D"]
+[node name="Spatial" type="Node2D" index="0"]
 
 _sections_unfolded = [ "Transform" ]
 
 [node name="Sprite" type="Sprite" parent="." index="0"]
 
+visible = false
 position = Vector2( 1000, 0 )
 texture = ExtResource( 1 )
 region_enabled = true
@@ -26,6 +27,7 @@ script = ExtResource( 2 )
 
 [node name="Player" parent="." index="3" instance=ExtResource( 3 )]
 
+position = Vector2( -2, -2 )
 friction = 0.0
 _sections_unfolded = [ "Angular", "Transform" ]
 a = 1000.0

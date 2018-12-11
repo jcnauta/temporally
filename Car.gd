@@ -36,15 +36,15 @@ func _integrate_forces(state):
   var lateral_drag = -100 * velocity.dot(right) * right
   set_applied_force(thrust_force + drag_force + steering_force + lateral_drag)
   
-  print("froV: " + str(frontSpeed))
+#  print("froV: " + str(frontSpeed))
   var steering_torque = -50 * turning * (min(frontSpeed, 200.0) + 0.02 * gas * sign(frontSpeed))
   var drag_torque = -1000 * get_angular_velocity()
   if abs(get_angular_velocity()) > 3.0:
     drag_torque = -20000 * get_angular_velocity()
-  print ("angv: " + str(get_angular_velocity()))
-  print("sto " + str(steering_torque) + ", drat " + str(drag_torque))
+#  print ("angv: " + str(get_angular_velocity()))
+#  print("sto " + str(steering_torque) + ", drat " + str(drag_torque))
   set_applied_torque(steering_torque + drag_torque)
   counter += 1
-  if counter % 50 == 0:
-    print ("velocity: " + str(velocity))
-    print ("rotation: " + str(rotation) + ", front: " + str(front) + ", turning: " + str(turning) + ", frontSpeed: " + str(frontSpeed))
+#  if counter % 50 == 0:
+#    print ("velocity: " + str(velocity))
+#    print ("rotation: " + str(rotation) + ", front: " + str(front) + ", turning: " + str(turning) + ", frontSpeed: " + str(frontSpeed))
