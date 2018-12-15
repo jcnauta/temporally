@@ -59,7 +59,7 @@ static func triangulate(points):
     var ii2 = 0
     # Remove all triangles whose circumscribed circle contains the point
     while(ii2 < TriangleList.size()):
-      if (triangulatePolygonSubFunc_InCircle(expandedPoints[ii1], expandedPoints[TriangleList[ii2].p1], expandedPoints[TriangleList[ii2].p2], expandedPoints[TriangleList[ii2].p3])):
+      if (_triangulatePolygonSubFunc_InCircle(expandedPoints[ii1], expandedPoints[TriangleList[ii2].p1], expandedPoints[TriangleList[ii2].p2], expandedPoints[TriangleList[ii2].p3])):
         Edges.append(Edge.new(TriangleList[ii2].p1, TriangleList[ii2].p2));
         Edges.append(Edge.new(TriangleList[ii2].p2, TriangleList[ii2].p3));
         Edges.append(Edge.new(TriangleList[ii2].p3, TriangleList[ii2].p1));
@@ -97,7 +97,7 @@ static func triangulate(points):
     
   return TriangleList
   
-static func triangulatePolygonSubFunc_InCircle(p, p1, p2, p3):
+static func _triangulatePolygonSubFunc_InCircle(p, p1, p2, p3):
   var float_Epsilon = 0.000001
   if (abs(p1.y - p2.y) < float_Epsilon && abs(p2.y - p3.y) < float_Epsilon):
     return false

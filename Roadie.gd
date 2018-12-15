@@ -7,7 +7,6 @@ var nWps = 15
 var radius = 1000
 var roadSize = 200
 var wps = []
-var wps2 = []
 var points =  PoolVector2Array()
 var boundary = PoolVector2Array()
 var bIdxs = PoolIntArray()
@@ -15,35 +14,42 @@ var triang = PoolIntArray()
 var triangCopy = PoolIntArray()
 var counter = 0.0
 var runNr = 0
-var debugging = false
+var generate = false
+var offendingPoint = null
+var offPrev = null
+var offNext = null
 
 func _ready():
-#  var hoi = randi()
-  wps2 = createWaypoints2(80)
-  wps = createWaypoints(nWps) # creates global wps
-  var leftSide = wayPointsBorder(wps, "left")
-  var rightSide = wayPointsBorder(wps, "right")
+  var v1 = Vector2(0.0, 1.0)
+  var v2 = Vector2(1.0, 0.0)
+  print("angletest " + str(v1.angle_to(v2)))
+  print("modulotest " + str(-2 % 6))
+  createWaypoints2(nWps)
+  
+#  wps = createWaypoints(nWps) # creates global wps
+#  var leftSide = wayPointsBorder(wps, "left")
+#  var rightSide = wayPointsBorder(wps, "right")
 #  get_parent().call_deferred("add_child", Roadside.new(wps))
-  get_parent().call_deferred("add_child", Roadside.new(leftSide))
-  get_parent().call_deferred("add_child", Roadside.new(rightSide))
+#  get_parent().call_deferred("add_child", Roadside.new(leftSide))
+#  get_parent().call_deferred("add_child", Roadside.new(rightSide))
   set_process(true)
 
 func _process(delta):
   counter += delta
   if counter > 1.0: #and !debugging:
-    wps2 = createWaypoints2(nWps)
+    if generate:
+      offendingPoint = null
+      offPrev = null
+      offNext = null
+      createWaypoints2(nWps)
+      runNr += 1
+      update()
+      generate = false
+    else:
+      removeSharpCorners()
+      update()
+      generate = true
     counter = 0.0
-    runNr += 1
-    update()
-#  pass
-
-func circlePoints(nWps):
-  var angle = 0
-  var dAngle = 2 * PI / nWps
-  wps = []
-  for wp in range (nWps):
-    wps.push_back(Vector2(radius, 0).rotated(angle))
-    angle += dAngle
 
 # Generates the track.
 # First pick the center point of the track, then generate waypoints
@@ -63,6 +69,7 @@ func createWaypoints(nWps):
 # Method based on https://stackoverflow.com/a/14266101/804318
 func createWaypoints2(nWps):
   var failure = true
+  
   while failure:
     print("new waypoints! runNr " + str(runNr))
     var side = 1000.0
@@ -82,7 +89,7 @@ func createWaypoints2(nWps):
         var tooClose = true;
         var newPoint;
         while tooClose:
-          newPoint = Vector2(randf() * side, randf() * side)
+          newPoint = Vector2(randf() * side - side / 2, randf() * side - side / 2)
           tooClose = false
           for j in points.size():
             if newPoint.distance_to(points[j]) < minDist:
@@ -158,8 +165,35 @@ func createWaypoints2(nWps):
           failure = true
           break
   if !failure:
+#    removeSharpCorners()
     return bIdxs
-    
+
+# For each sharp corner:
+# a. if possible, "cut" a small part off the corner, effectively turning the corner into an edge.
+# b. if there is no room because one of the neighbors is too close, simply remove the corner.
+func removeSharpCorners():
+  var removedOne = true
+  while bIdxs.size() > 2 and removedOne == true:
+    print("iteration!  bIdxs: " + str(bIdxs.size()))
+    removedOne = false
+    for idx in range(bIdxs.size()):
+      var b = bIdxs[idx]
+      var point = points[b]
+      var prevP = points[bIdxs[(idx - 1 + bIdxs.size()) % bIdxs.size()]]
+      var nextP = points[bIdxs[(idx + 1) % bIdxs.size()]]
+      var angle = (prevP - point).angle_to(nextP - point)
+      print (angle)
+      if abs(angle) < PI / 8:
+        removedOne = true
+        offendingPoint = points[b]
+        offNext = points[bIdxs[(idx + 1) % bIdxs.size()]]
+        offPrev = points[bIdxs[(idx - 1 + bIdxs.size()) % bIdxs.size()]]
+        points.remove(b)
+        bIdxs.remove(idx)
+        for decreaseIdx in range(bIdxs.size()):
+          if bIdxs[decreaseIdx] > b:
+            bIdxs[decreaseIdx] -= 1
+        break # so that we restart the for-loop with a smaller number
 
 # Create the inside/outside of the track, using bisectors at each point.
 # side can be "left" or "right", which will correspond to the outside/inside
@@ -201,6 +235,11 @@ func _draw():
       draw_circle(point, 4, Color(1, 0, 0))
     for idx in len(bIdxs):
       draw_line(points[bIdxs[idx]], points[bIdxs[(idx + 1) % len(bIdxs)]], Color(0.0, 1.0, 0.0))
+    if offendingPoint:
+      draw_circle(offendingPoint, 12, Color(1, 0, 0))
+      draw_circle(offPrev, 8, Color(0, 1, 0))
+      draw_circle(offNext, 8, Color(0, 0, 1))
+#    draw_circle(points[bIdxs[0]], 8, Color(0, 1, 0.5))
 #    for idx in triangCopy.size():
 #      var cor = Color(randf(), randf(), randf())
 #      draw_line(points[triangCopy[idx]], points[triangCopy[idx + 1]], cor)
