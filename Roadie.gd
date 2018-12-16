@@ -3,7 +3,7 @@ extends Node2D
 var Roadside = preload("res://Roadside.gd")
 var Delauney = preload("res://Delauney.gd")
 
-var nWps = 15
+var nWps = 25
 var radius = 1000
 var roadSize = 200
 var wps = []
@@ -24,7 +24,7 @@ func _ready():
   var v2 = Vector2(1.0, 0.0)
   print("angletest " + str(v1.angle_to(v2)))
   print("modulotest " + str(-2 % 6))
-  createWaypoints2(nWps)
+  createWaypoints(nWps)
   
 #  wps = createWaypoints(nWps) # creates global wps
 #  var leftSide = wayPointsBorder(wps, "left")
@@ -41,7 +41,7 @@ func _process(delta):
       offendingPoint = null
       offPrev = null
       offNext = null
-      createWaypoints2(nWps)
+      createWaypoints(nWps)
       runNr += 1
       update()
       generate = false
@@ -52,22 +52,8 @@ func _process(delta):
     counter = 0.0
 
 # Generates the track.
-# First pick the center point of the track, then generate waypoints
-# at random distances from it, which will be the parcours.
-func createWaypoints(nWps):
-  var waypoints = []
-  var trackCenter = Vector2(1600, 200)
-  var angle = 0
-  var angles = []
-  for wp in range (nWps):
-    angles.push_back(randf() * 2 * PI)
-  angles.sort()
-  for wp in range(nWps):
-    waypoints.push_back(trackCenter + Vector2(radius + randf() * 50, 0).rotated(angles[wp]))
-  return waypoints
-
 # Method based on https://stackoverflow.com/a/14266101/804318
-func createWaypoints2(nWps):
+func createWaypoints(nWps):
   var failure = true
   
   while failure:
@@ -172,6 +158,7 @@ func createWaypoints2(nWps):
 # a. if possible, "cut" a small part off the corner, effectively turning the corner into an edge.
 # b. if there is no room because one of the neighbors is too close, simply remove the corner.
 func removeSharpCorners():
+  var minSegment = 64
   var removedOne = true
   while bIdxs.size() > 2 and removedOne == true:
     print("iteration!  bIdxs: " + str(bIdxs.size()))
@@ -182,17 +169,29 @@ func removeSharpCorners():
       var prevP = points[bIdxs[(idx - 1 + bIdxs.size()) % bIdxs.size()]]
       var nextP = points[bIdxs[(idx + 1) % bIdxs.size()]]
       var angle = (prevP - point).angle_to(nextP - point)
-      print (angle)
       if abs(angle) < PI / 8:
         removedOne = true
         offendingPoint = points[b]
-        offNext = points[bIdxs[(idx + 1) % bIdxs.size()]]
-        offPrev = points[bIdxs[(idx - 1 + bIdxs.size()) % bIdxs.size()]]
-        points.remove(b)
-        bIdxs.remove(idx)
-        for decreaseIdx in range(bIdxs.size()):
-          if bIdxs[decreaseIdx] > b:
-            bIdxs[decreaseIdx] -= 1
+        var vPrev = prevP - point
+        var vNext = nextP - point
+        # Calculate displacement based on angle
+        var displacement = abs(0.5 * minSegment / sin(angle)) # sin angle = 0.5 * minSegment / displacement
+        print("displacement " + str(displacement))
+        if displacement < min (vPrev.length(), vNext.length() - minSegment):
+          var dir1 = vPrev.normalized()
+          var dir2 = vNext.normalized()
+          var newPoint = Vector2(point.x, point.y)
+          points[b] += dir1 * displacement
+          newPoint += dir2 * displacement
+          points.append(newPoint)
+          bIdxs.insert((idx + 1) % bIdxs.size(), points.size() - 1)
+        else:
+          points.remove(b)
+          bIdxs.remove(idx)
+          for decreaseIdx in range(bIdxs.size()):
+            if bIdxs[decreaseIdx] > b:
+              bIdxs[decreaseIdx] -= 1
+        
         break # so that we restart the for-loop with a smaller number
 
 # Create the inside/outside of the track, using bisectors at each point.
@@ -229,7 +228,6 @@ func wayPointsBorder(waypoints, side):
   return border
 
 func _draw():
-  print("drawing")
   if len(points) > 0:
     for point in points:
       draw_circle(point, 4, Color(1, 0, 0))
@@ -237,8 +235,8 @@ func _draw():
       draw_line(points[bIdxs[idx]], points[bIdxs[(idx + 1) % len(bIdxs)]], Color(0.0, 1.0, 0.0))
     if offendingPoint:
       draw_circle(offendingPoint, 12, Color(1, 0, 0))
-      draw_circle(offPrev, 8, Color(0, 1, 0))
-      draw_circle(offNext, 8, Color(0, 0, 1))
+#      draw_circle(offPrev, 8, Color(0, 1, 0))
+#      draw_circle(offNext, 8, Color(0, 0, 1))
 #    draw_circle(points[bIdxs[0]], 8, Color(0, 1, 0.5))
 #    for idx in triangCopy.size():
 #      var cor = Color(randf(), randf(), randf())
