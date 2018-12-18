@@ -4,7 +4,7 @@
 [ext_resource path="res://Roadie.gd" type="Script" id=2]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=3]
 
-[node name="Spatial" type="Node2D"]
+[node name="Game" type="Node2D" index="0"]
 
 _sections_unfolded = [ "Transform" ]
 
@@ -17,16 +17,16 @@ region_enabled = true
 region_rect = Rect2( 0, 0, 10000, 10000 )
 _sections_unfolded = [ "Region", "Transform" ]
 
-[node name="YSort" type="YSort" parent="." index="1"]
-
-sort_enabled = true
-
-[node name="Roadie" type="Node2D" parent="." index="2"]
+[node name="Roadie" type="Node2D" parent="." index="1"]
 
 script = ExtResource( 2 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="Player" parent="." index="3" instance=ExtResource( 3 )]
+[node name="YSort" type="YSort" parent="." index="2"]
+
+sort_enabled = true
+
+[node name="Player" parent="YSort" index="0" instance=ExtResource( 3 )]
 
 position = Vector2( -2, -2 )
 friction = 0.0
