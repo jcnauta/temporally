@@ -1,6 +1,7 @@
 extends Node2D
 
-var Roadside = preload("res://Roadside.gd")
+var BarrierSegment = preload("res://BarrierSegment.gd")
+var Checkpoint = preload("res://Checkpoint.gd")
 var Delauney = preload("res://Delauney.gd")
 
 var initWps = 15
@@ -22,14 +23,16 @@ var burnRuns = 0
 
 func _ready():
   createValidWaypoints(initWps)
-  print("points: " + str(points.size()))
-  print("bIdxs: " + str(bIdxs.size()))
   var leftSide = wayPointsBorder(bIdxs, "left")
-  print("left: " + str(leftSide.size()))
   var rightSide = wayPointsBorder(bIdxs, "right")
-#  get_parent().call_deferred("add_child", Roadside.new(points, bIdxs))
-  get_parent().call_deferred("add_child", Roadside.new(leftSide))
-  get_parent().call_deferred("add_child", Roadside.new(rightSide))
+  var cp0Idx = 0
+  var cp1Idx = round(leftSide.size() / 3.0)
+  var cp2Idx = round(leftSide.size() * 2.0/3.0)
+  get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp0Idx], rightSide[cp0Idx], 0))
+  get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp1Idx], rightSide[cp1Idx], 1))
+  get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp2Idx], rightSide[cp2Idx], 2))
+  get_parent().call_deferred("add_child", BarrierSegment.new(leftSide))
+  get_parent().call_deferred("add_child", BarrierSegment.new(rightSide))
   var player = $"../YSort/Player"
   player.position = points[bIdxs[0]]
   var towards = points[bIdxs[1]] - points[bIdxs[0]]

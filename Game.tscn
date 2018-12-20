@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://TrackGenerator.gd" type="Script" id=2]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI.gd" type="Script" id=4]
+
+[node name="Game" type="Node2D" index="0"]
+
+_sections_unfolded = [ "Transform" ]
+
+[node name="Sprite" type="Sprite" parent="." index="0"]
+
+visible = false
+position = Vector2( 1000, 0 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 10000, 10000 )
+_sections_unfolded = [ "Region", "Transform" ]
+
+[node name="TrackGenerator" type="Node2D" parent="." index="1"]
+
+script = ExtResource( 2 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="YSort" type="YSort" parent="." index="2"]
+
+sort_enabled = true
+
+[node name="Player" parent="YSort" index="0" instance=ExtResource( 3 )]
+
+position = Vector2( -2, -2 )
+friction = 0.0
+_sections_unfolded = [ "Angular", "Transform" ]
+a = 1000.0
+maxGas = 1000.0
+turnSpeed = 30.0
+maxTurn = 1.5
+
+[node name="UI" type="CanvasLayer" parent="." index="3"]
+
+layer = 1
+offset = Vector2( 0, 0 )
+rotation = 0.0
+scale = Vector2( 1, 1 )
+transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+script = ExtResource( 4 )
+
+[node name="Label" type="Label" parent="UI" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 509.0
+margin_top = 295.0
+margin_right = 574.0
+margin_bottom = 331.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "0"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor" ]
+
+
