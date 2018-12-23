@@ -7,7 +7,7 @@ var Delauney = preload("res://Delauney.gd")
 #export(NodePath) var playerPath
 #onready var player = $"../YSort/Player"
 
-var initWps = 14
+var initWps = 20
 var points =  PoolVector2Array()
 var boundary = PoolVector2Array()
 var bIdxs = PoolIntArray()
@@ -28,9 +28,9 @@ func _ready():
   createValidWaypoints(initWps)
   var leftSide = wayPointsBorder(bIdxs, "left")
   var rightSide = wayPointsBorder(bIdxs, "right")
-  var cp0Idx = 0
-  var cp1Idx = round(leftSide.size() / 3.0)
-  var cp2Idx = round(leftSide.size() * 2.0/3.0)
+  var cp0Idx = 1
+  var cp1Idx = leftSide.size() / 3.0 + 2
+  var cp2Idx = leftSide.size() * 2.0/3.0 + 3
   get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp0Idx], rightSide[cp0Idx], 0))
   get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp1Idx], rightSide[cp1Idx], 1))
   get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp2Idx], rightSide[cp2Idx], 2))
@@ -82,12 +82,11 @@ func createValidWaypoints(initWps):
 # Generates the track.
 # Method based on https://stackoverflow.com/a/14266101/804318
 func createWaypoints(initWps):
-  var side = 2500.0
-  roadSize = 300
+  roadSize = 500
 #  minDist = 0.5 * side / sqrt(initWps) # always possible to place point
 #  roadSize = 0.5 * minDist
   minDist = 2 * roadSize
-  side = 2 * minDist * sqrt(initWps)
+  var side = 3 * minDist * sqrt(initWps)
   var failure = true  
   while failure:
     points =  PoolVector2Array()
@@ -280,25 +279,34 @@ func wayPointsBorder(waypoints, side):
     var turn = (-1 * toPrev.x) * toNext.y - (-1 * toPrev.y) * toNext.x
     var borderPoint = (toNext + toPrev).normalized() * roadSize
     if side == "right":
-      if turn > 0.001:
-        border.push_back(thisPoint + borderPoint)
-      elif turn < -0.001:
+      if turn > 0: # inner curve
+        for innerIdx in 3:
+          border.push_back(thisPoint + borderPoint)
+      else: # this is the outer curve
+        var outerPrev = roadSize * toPrev.tangent()
+        border.push_back(thisPoint + outerPrev)
         border.push_back(thisPoint - borderPoint)
-      else:
-        print("TODO: straight segments")
+        var outerNext = roadSize * -toNext.tangent()
+        border.push_back(thisPoint + outerNext)
     if side == "left":
-      if turn > 0.001:
+      if turn < 0: # inner curve
+        for innerIdx in 3:
+          border.push_back(thisPoint + borderPoint)
+      else: # outer curve
+#        for innerIdx in 3:
+#          border.push_back(thisPoint - borderPoint)
+        var outerPrev = roadSize * toPrev.tangent()
+        border.push_back(thisPoint - outerPrev)
         border.push_back(thisPoint - borderPoint)
-      elif turn < -0.001:
-        border.push_back(thisPoint + borderPoint)
-      else:
-        print("TODO: straight segments")
+        var outerNext = roadSize * -toNext.tangent()
+        border.push_back(thisPoint - outerNext)
   return border
 
 func _draw():
-  if len(points) > 0:
-    for idx in bIdxs.size():
-      draw_line(points[bIdxs[idx]], points[bIdxs[(idx + 1) % bIdxs.size()]], Color(0.0, 1.0, 0.0))
-    for point in points:
-      draw_circle(point, 10, Color(1, 0, 1))
+  pass
+#  if len(points) > 0:
+#    for idx in bIdxs.size():
+#      draw_line(points[bIdxs[idx]], points[bIdxs[(idx + 1) % bIdxs.size()]], Color(0.0, 1.0, 0.0))
+#    for point in points:
+#      draw_circle(point, 10, Color(1, 0, 1))
     

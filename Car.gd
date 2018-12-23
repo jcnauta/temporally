@@ -9,6 +9,8 @@ export (float) var maxTurn
 
 var gas = 0.0
 var turning = 0.0
+var drifting = false
+
 var alive = true
 var counter = 0
 var resetting = false
@@ -34,22 +36,29 @@ func _integrate_forces(state):
   var frontSpeed = velocity.dot(front)
   # longitudinal forces
   var thrust_force = front * gas
-  var drag_force = (-0.001 * velocity.length() - 0.5) * velocity
+  var drag_force = (-0.001 * velocity.length() - 1.0) * velocity
   # lateral forces
   var right = front.tangent()
   var steering_force = velocity.dot(front) * turning * right
-  var sideVelocity = velocity.dot(right)
+  var sideSpeed = abs(velocity.dot(right))
   var lateral_drag = Vector2()
-  if sideVelocity < 120.0:
+  if sideSpeed > 300.0:
+    drifting = false
+  elif sideSpeed < 2.0:
+    drifting = false
+  if !drifting:
     lateral_drag = -100 * velocity.dot(right) * right
   set_applied_force(thrust_force + drag_force + steering_force + lateral_drag)
                         # how much are we steering
                         # sharper turns at low speed
-  var steering_torque = -50 * turning * \
-                        (min(abs(frontSpeed), 200.0)) #+ \ 
-                        # 0.02 * gas * \ # more thrust == more torque
-                        # sign(frontSpeed))
-  var drag_torque = -1000 * get_angular_velocity()
+  var steering_torque
+  if gas > 0:
+    steering_torque = -100 * turning * min(200, abs(frontSpeed))
+  else:
+    steering_torque = -100 * turning * clamp(frontSpeed, -200, 200.0)
+                        
+  var phi = get_angular_velocity()
+  var drag_torque = -3000 * phi * phi * sign(phi)
   if abs(get_angular_velocity()) > 3.0:
     drag_torque = -20000 * get_angular_velocity()
   set_applied_torque(steering_torque + drag_torque)

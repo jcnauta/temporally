@@ -1,19 +1,36 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Game.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
-[ext_resource path="res://TrackGenerator.gd" type="Script" id=3]
-[ext_resource path="res://Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://TrackGenerator.gd" type="Script" id=2]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/images/cars/player2.png" type="Texture" id=4]
 [ext_resource path="res://ObstacleSpawner.gd" type="Script" id=5]
 [ext_resource path="res://UI.gd" type="Script" id=6]
 [ext_resource path="res://CarCam.gd" type="Script" id=7]
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="Node2D" index="0"]
 
 script = ExtResource( 1 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="Viewports" type="HBoxContainer" parent="." index="0"]
+[node name="ColorRect" type="ColorRect" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1600.0
+margin_bottom = 800.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+color = Color( 1, 1, 1, 1 )
+_sections_unfolded = [ "Rect" ]
+
+[node name="Viewports" type="HBoxContainer" parent="." index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -35,8 +52,10 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 750.0
-margin_bottom = 750.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 795.0
+margin_bottom = 795.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -50,7 +69,7 @@ _sections_unfolded = [ "Rect" ]
 [node name="VP1" type="Viewport" parent="Viewports/VPC1" index="0"]
 
 arvr = false
-size = Vector2( 750, 750 )
+size = Vector2( 790, 790 )
 own_world = false
 world = null
 transparent_bg = false
@@ -75,50 +94,44 @@ shadow_atlas_quad_3 = 4
 
 [node name="World" type="Node" parent="Viewports/VPC1/VP1" index="0"]
 
-[node name="Sprite" type="Sprite" parent="Viewports/VPC1/VP1/World" index="0"]
+[node name="TrackGenerator" type="Node2D" parent="Viewports/VPC1/VP1/World" index="0"]
 
-visible = false
-position = Vector2( 1000, 0 )
-texture = ExtResource( 2 )
-region_enabled = true
-region_rect = Rect2( 0, 0, 10000, 10000 )
-_sections_unfolded = [ "Region", "Transform" ]
-
-[node name="TrackGenerator" type="Node2D" parent="Viewports/VPC1/VP1/World" index="1"]
-
-script = ExtResource( 3 )
+script = ExtResource( 2 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="YSort" type="YSort" parent="Viewports/VPC1/VP1/World" index="2"]
+[node name="YSort" type="YSort" parent="Viewports/VPC1/VP1/World" index="1"]
 
 sort_enabled = true
 _sections_unfolded = [ "Sort" ]
 
-[node name="Player" parent="Viewports/VPC1/VP1/World/YSort" index="0" instance=ExtResource( 4 )]
+[node name="Player" parent="Viewports/VPC1/VP1/World/YSort" index="0" instance=ExtResource( 3 )]
 
 position = Vector2( -2, -2 )
 friction = 0.05
-bounce = 1.0
 _sections_unfolded = [ "Angular", "Linear", "Pickable", "Transform" ]
 a = 2000.0
-maxGas = 1000.0
-turnSpeed = 30.0
+maxGas = 3000.0
+turnSpeed = 100.0
 maxTurn = 1.5
 id = 1
 
-[node name="Player2" parent="Viewports/VPC1/VP1/World/YSort" index="1" instance=ExtResource( 4 )]
+[node name="Player2" parent="Viewports/VPC1/VP1/World/YSort" index="1" instance=ExtResource( 3 )]
 
+editor/display_folded = true
 position = Vector2( -2, -2 )
 friction = 0.05
-bounce = 1.0
 _sections_unfolded = [ "Angular", "Transform" ]
 a = 2000.0
-maxGas = 1000.0
-turnSpeed = 30.0
+maxGas = 3000.0
+turnSpeed = 100.0
 maxTurn = 1.5
 id = 2
 
-[node name="ObstacleSpawner" type="Node2D" parent="Viewports/VPC1/VP1/World" index="3"]
+[node name="Sprite" parent="Viewports/VPC1/VP1/World/YSort/Player2" index="0"]
+
+texture = ExtResource( 4 )
+
+[node name="ObstacleSpawner" type="Node2D" parent="Viewports/VPC1/VP1/World" index="2"]
 
 script = ExtResource( 5 )
 
@@ -220,6 +233,7 @@ editor_draw_screen = true
 editor_draw_limits = false
 editor_draw_drag_margin = false
 script = ExtResource( 7 )
+_sections_unfolded = [ "Material", "Visibility" ]
 
 [node name="VPC2" type="ViewportContainer" parent="Viewports" index="1"]
 
@@ -227,9 +241,10 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 754.0
-margin_right = 1504.0
-margin_bottom = 750.0
+margin_left = 805.0
+margin_top = 5.0
+margin_right = 1595.0
+margin_bottom = 805.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -243,7 +258,7 @@ _sections_unfolded = [ "Rect" ]
 [node name="VP2" type="Viewport" parent="Viewports/VPC2" index="0"]
 
 arvr = false
-size = Vector2( 750, 750 )
+size = Vector2( 790, 790 )
 own_world = false
 world = null
 transparent_bg = false
@@ -366,3 +381,4 @@ editor_draw_drag_margin = false
 script = ExtResource( 7 )
 
 
+[editable path="Viewports/VPC1/VP1/World/YSort/Player2"]
