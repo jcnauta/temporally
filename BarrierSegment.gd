@@ -25,7 +25,7 @@ func _init(pointsParam, closedLoop = true, pIdxs = null):
     lineSeg.b = wp2
     collShape.shape = lineSeg
     staticShape.add_child(collShape)
-    staticShape.bounce = 0.5
+    staticShape.bounce = 0.0
     staticShape.friction = 0.0
     add_child(staticShape)
   

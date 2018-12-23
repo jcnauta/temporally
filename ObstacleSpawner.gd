@@ -14,7 +14,9 @@ func spawn(leftSide, rightSide):
     var randoms = []
     var totalRand = 0
     for rIdx in 4:
-      var newRand = randf()
+      var newRand = 0.5 + randf()
+      if newRand >= 1.0:
+        newRand -= 1.0
       totalRand += newRand
       randoms.append(newRand)
     for rIdx in 4:

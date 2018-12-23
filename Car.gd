@@ -34,17 +34,21 @@ func _integrate_forces(state):
   var frontSpeed = velocity.dot(front)
   # longitudinal forces
   var thrust_force = front * gas
-  var drag_force = -velocity
+  var drag_force = (-0.001 * velocity.length() - 0.5) * velocity
   # lateral forces
   var right = front.tangent()
   var steering_force = velocity.dot(front) * turning * right
   var sideVelocity = velocity.dot(right)
   var lateral_drag = Vector2()
-  if sideVelocity < 30.0:
+  if sideVelocity < 120.0:
     lateral_drag = -100 * velocity.dot(right) * right
   set_applied_force(thrust_force + drag_force + steering_force + lateral_drag)
-  
-  var steering_torque = -50 * turning * (min(frontSpeed, 200.0) + 0.02 * gas * sign(frontSpeed))
+                        # how much are we steering
+                        # sharper turns at low speed
+  var steering_torque = -50 * turning * \
+                        (min(abs(frontSpeed), 200.0)) #+ \ 
+                        # 0.02 * gas * \ # more thrust == more torque
+                        # sign(frontSpeed))
   var drag_torque = -1000 * get_angular_velocity()
   if abs(get_angular_velocity()) > 3.0:
     drag_torque = -20000 * get_angular_velocity()
