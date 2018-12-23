@@ -4,7 +4,10 @@ var BarrierSegment = preload("res://BarrierSegment.gd")
 var Checkpoint = preload("res://Checkpoint.gd")
 var Delauney = preload("res://Delauney.gd")
 
-var initWps = 15
+#export(NodePath) var playerPath
+#onready var player = $"../YSort/Player"
+
+var initWps = 14
 var points =  PoolVector2Array()
 var boundary = PoolVector2Array()
 var bIdxs = PoolIntArray()
@@ -34,23 +37,12 @@ func _ready():
   get_parent().call_deferred("add_child", BarrierSegment.new(leftSide))
   get_parent().call_deferred("add_child", BarrierSegment.new(rightSide))
   var player = $"../YSort/Player"
-  player.position = points[bIdxs[0]]
-  var towards = points[bIdxs[1]] - points[bIdxs[0]]
-  player.rotation = towards.angle()
+  var player2 = $"../YSort/Player2"
+  for player in [player, player2]:
+    var towards = points[bIdxs[1]] - points[bIdxs[0]]
+    player.setStartPosition(points[bIdxs[0]], towards.angle())
+    player.resetPosition()
   set_process(true)
-
-#func _process(delta):
-#  counter += delta
-#  if counter > 2.0:
-#    while burnRuns > 0: # for debugging, seed is the same every time.
-#      bIdxs = createWaypoints(initWps)
-#      burnRuns -= 1
-#    createValidWaypoints(initWps)
-#    else:
-#      print("good circuit after " + str(failures) + " attempts.")
-#    runNr += 1
-#    update()
-#    counter = 0.0
 
 func createValidWaypoints(initWps):
   var isBad = true

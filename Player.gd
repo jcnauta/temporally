@@ -1,24 +1,29 @@
 extends "res://Car.gd"
 
+export var id = 0
+
 func control(delta):
-  var tLeft = Input.is_action_pressed('turnLeft')
-  var tRight = Input.is_action_pressed('turnRight')
+  if Input.is_action_just_pressed('reposition%s' % id):
+    resetting = true
+  
+  var tLeft = Input.is_action_pressed('turnLeft%s' % id)
+  var tRight = Input.is_action_pressed('turnRight%s' % id)
   if tLeft:
     turning = clamp(turning + turnSpeed * delta, -maxTurn, maxTurn) # set and limit steering wheel rotations
-  elif Input.is_action_just_released('turnLeft'):
+  elif Input.is_action_just_released('turnLeft%s' % id):
     turning = min(0.0, turning)
   if tRight:
     turning = clamp(turning - turnSpeed * delta, -maxTurn, maxTurn) # set and limit steering wheel rotations
-  elif Input.is_action_just_released('turnRight'):
+  elif Input.is_action_just_released('turnRight%s' % id):
     turning = max(0.0, turning)
   turning -= 2 * turning * delta
-  if Input.is_action_pressed('forward'):
+  if Input.is_action_pressed('forward%s' % id):
     gas = gas + a * delta
-  elif Input.is_action_just_released('forward'):
+  elif Input.is_action_just_released('forward%s' % id):
     gas = min(gas, 0.0)
-  if Input.is_action_pressed('back'):
+  if Input.is_action_pressed('back%s' % id):
     gas = gas - a * delta
-  elif Input.is_action_just_released('back'):
+  elif Input.is_action_just_released('back%s' % id):
     gas = max(gas, 0.0)
   if gas > 0.0:
     gas -= 0.5 * a * delta
@@ -30,4 +35,3 @@ func control(delta):
       gas = 0
   gas = clamp(gas, -maxGas, maxGas)
 #  velocity.rotated(Vector3(0, 1.0, 0), turning)
-  

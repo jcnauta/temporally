@@ -21,4 +21,6 @@ func _draw():
   
 func _on_Area2D_body_enter(body):
   if body.name == "Player":
-    $"/root/Game/UI".reachCheckpoint(checkIdx)
+    $"/root/Game/Viewports/VPC1/VP1/UI".reachCheckpoint(checkIdx)
+  if body.name == "Player2":
+    $"/root/Game/Viewports/VPC2/VP2/UI2".reachCheckpoint(checkIdx)

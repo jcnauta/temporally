@@ -11,6 +11,11 @@ var gas = 0.0
 var turning = 0.0
 var alive = true
 var counter = 0
+var resetting = false
+var resetPrepared = false
+
+var startPos
+var startRot
 
 func _ready():
   pass
@@ -21,7 +26,7 @@ func control():
 func _process(delta):
   control(delta)
 
-func _integrate_forces(state):
+func _integrate_forces(state):  
   if not alive:
     return
   var front = Vector2(1.0, 0.0).rotated(rotation)
@@ -33,18 +38,37 @@ func _integrate_forces(state):
   # lateral forces
   var right = front.tangent()
   var steering_force = velocity.dot(front) * turning * right
-  var lateral_drag = -100 * velocity.dot(right) * right
+  var sideVelocity = velocity.dot(right)
+  var lateral_drag = Vector2()
+  if sideVelocity < 30.0:
+    lateral_drag = -100 * velocity.dot(right) * right
   set_applied_force(thrust_force + drag_force + steering_force + lateral_drag)
   
-#  print("froV: " + str(frontSpeed))
   var steering_torque = -50 * turning * (min(frontSpeed, 200.0) + 0.02 * gas * sign(frontSpeed))
   var drag_torque = -1000 * get_angular_velocity()
   if abs(get_angular_velocity()) > 3.0:
     drag_torque = -20000 * get_angular_velocity()
-#  print ("angv: " + str(get_angular_velocity()))
-#  print("sto " + str(steering_torque) + ", drat " + str(drag_torque))
   set_applied_torque(steering_torque + drag_torque)
   counter += 1
+  
+  if resetting:
+    resetPosition(state)
+    resetting = false
 #  if counter % 50 == 0:
 #    print ("velocity: " + str(velocity))
 #    print ("rotation: " + str(rotation) + ", front: " + str(front) + ", turning: " + str(turning) + ", frontSpeed: " + str(frontSpeed))
+
+func setStartPosition(startPos, startRot):
+  self.startPos = startPos
+  self.startRot = startRot
+  
+func resetPosition(state = null):
+  if state == null:
+    transform = Transform2D(self.startRot, self.startPos)
+  else:
+    state.transform = Transform2D(self.startRot, self.startPos)
+  turning = 0
+  gas = 0
+  self.linear_velocity = Vector2()
+  self.angular_velocity = 0.0
+  self.set_applied_force(Vector2())
