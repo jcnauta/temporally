@@ -42,6 +42,9 @@ func _ready():
     var towards = points[bIdxs[1]] - points[bIdxs[0]]
     player.setStartPosition(points[bIdxs[0]], towards.angle())
     player.resetPosition()
+    
+  $"../ObstacleSpawner".spawn(leftSide, rightSide)
+  
   set_process(true)
 
 func createValidWaypoints(initWps):
