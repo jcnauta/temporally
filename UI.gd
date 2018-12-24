@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-var laps = 0
+var lapNr = 1
 var prevCheck = 0
 var progress = 0
 
@@ -12,8 +12,8 @@ func reachCheckpoint(checkIdx):
     progress += 1
     if checkIdx == 0 && progress == 3:
         progress = 0
-        laps += 1
-        $"./LabelLaps".text = str(laps)
+        lapNr += 1
+        $"./LabelLaps".text = "Lap #" + str(lapNr)
         var lapTime = OS.get_ticks_msec() - startTime
         $"./LabelLapTime".text = "previous lap time: " + str(lapTime / 1000.0)
         if bestTime == null || lapTime < bestTime:

@@ -7,6 +7,7 @@ export (float) var turnSpeed
 export (float) var maxTurn
 
 
+var ghostFuel = 0.0
 var gas = 0.0
 var turning = 0.0
 var drifting = false
@@ -20,7 +21,7 @@ var startPos
 var startRot
 
 func _ready():
-  pass
+  set_collision_mask_bit(7, true)
 
 func control():
   pass

@@ -15,6 +15,7 @@ func _init(p1, p2, checkIdx):
     
 func _ready():
   areaShape.connect('body_entered', self, '_on_Area2D_body_enter')
+  areaShape.set_collision_layer_bit(7, true)
 
 func _draw():
   draw_line(lineSeg.a, lineSeg.b, Color(1, 1, 0), 6)

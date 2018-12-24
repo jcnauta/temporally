@@ -5,6 +5,12 @@ export var id = 0
 func control(delta):
   if Input.is_action_just_pressed('reposition%s' % id):
     resetting = true
+  if Input.is_action_just_pressed('ghost%s' % id):
+    set_collision_mask_bit(0, false)
+    set_collision_layer_bit(0, false)
+  elif Input.is_action_just_released('ghost%s' % id):
+    set_collision_mask_bit(0, true)
+    set_collision_layer_bit(0, true)
   
   var tLeft = Input.is_action_pressed('turnLeft%s' % id)
   var tRight = Input.is_action_pressed('turnRight%s' % id)
