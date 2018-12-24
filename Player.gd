@@ -8,9 +8,11 @@ func control(delta):
   if Input.is_action_just_pressed('ghost%s' % id):
     set_collision_mask_bit(0, false)
     set_collision_layer_bit(0, false)
+    modulate.a = 0.3
   elif Input.is_action_just_released('ghost%s' % id):
     set_collision_mask_bit(0, true)
     set_collision_layer_bit(0, true)
+    modulate.a = 1.0
   
   var tLeft = Input.is_action_pressed('turnLeft%s' % id)
   var tRight = Input.is_action_pressed('turnRight%s' % id)
