@@ -56,6 +56,8 @@ func _integrate_forces(state):
   var steering_torque
   if gas > 0:
     steering_torque = -100 * turning * min(200, abs(frontSpeed))
+  elif gas < 0:
+    steering_torque = 100 * turning * min(200, abs(frontSpeed))
   else:
     steering_torque = -100 * turning * clamp(frontSpeed, -200, 200.0)
                         
