@@ -5,7 +5,7 @@ var Obstacle = preload("res://Obstacle.tscn")
 func spawnOnGrid(leftSide, rightSide):
   for idx in (leftSide.size() / 3):
     var idxInPoints = 3 * idx + 2
-    var nextIdxInPoints = (3 * idx + 5) % leftSide.size()
+    var nextIdxInPoints = (3 * idx + 3) % leftSide.size()
     var l1 = leftSide[idxInPoints]
     var l2 = leftSide[nextIdxInPoints]
     var r1 = rightSide[idxInPoints]
@@ -60,7 +60,7 @@ func spawnOnGrid(leftSide, rightSide):
       var surfaceLeft = 0.5 * trBase.length() * trHeightLeft
       var surfaceRight = 0.5 * trBase.length() * trHeightRight
       
-      for jdx in round(0.000001 * (surfaceLeft + surfaceRight)):
+      for jdx in round(0.000002 * (surfaceLeft + surfaceRight)):
         var breadthOffset = randi() % breadthBins
         var rightFrac = (breadthOffset + 1.0) / (breadthBins + 1.0)
         var leftFrac = 1.0 - rightFrac

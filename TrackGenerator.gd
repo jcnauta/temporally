@@ -88,7 +88,7 @@ func createValidWaypoints(initWps):
 # Generates the track.
 # Method based on https://stackoverflow.com/a/14266101/804318
 func createWaypoints(initWps):
-  roadSize = 300
+  roadSize = 450
 #  minDist = 0.5 * side / sqrt(initWps) # always possible to place point
 #  roadSize = 0.5 * minDist
   minDist = 2 * roadSize
@@ -313,7 +313,8 @@ func generateRoadSegments(left, right):
   var nrPoints = left.size()
   for idx in left.size():
     var points = [left[idx], left[(idx + 1) % nrPoints], right[(idx + 1) % nrPoints], right[idx]]
-    segments.append(RoadSegment.new(points, [Color(0.4, 0.4, 0.4)]))
+    var lightness = 0.3 + 0.2 * randf()
+    segments.append(RoadSegment.new(points, [Color(lightness, lightness, lightness)]))
   return segments
 
 func _draw():
