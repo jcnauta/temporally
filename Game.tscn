@@ -38,8 +38,8 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 1595.0
-margin_bottom = 795.0
+margin_right = 1600.0
+margin_bottom = 800.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -55,8 +55,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 790.0
-margin_bottom = 790.0
+margin_right = 795.0
+margin_bottom = 795.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -65,7 +65,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 stretch = false
 stretch_shrink = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Size Flags" ]
 
 [node name="VP1" type="Viewport" parent="Viewports/VPC1" index="0"]
 
@@ -244,9 +244,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 794.0
-margin_right = 1584.0
-margin_bottom = 790.0
+margin_left = 800.0
+margin_right = 1595.0
+margin_bottom = 795.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -255,7 +255,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 stretch = false
 stretch_shrink = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = [ "Anchor", "Rect" ]
 
 [node name="VP2" type="Viewport" parent="Viewports/VPC2" index="0"]
 
