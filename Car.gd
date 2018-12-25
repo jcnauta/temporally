@@ -22,6 +22,7 @@ var startRot
 
 func _ready():
   set_collision_mask_bit(7, true)
+  set_collision_mask_bit(6, true)
 
 func control():
   pass

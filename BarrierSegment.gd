@@ -27,6 +27,8 @@ func _init(pointsParam, closedLoop = true, pIdxs = null):
     staticShape.add_child(collShape)
     staticShape.bounce = 0.5
     staticShape.friction = 1.0
+    staticShape.set_collision_layer_bit(6, true)
+    staticShape.set_collision_layer_bit(1, false)
     add_child(staticShape)
   
 func _draw():

@@ -8,7 +8,7 @@
 custom_solver_bias = 0.0
 points = PoolVector2Array( -64, -20, -40, -28, 40, -28, 64, -20, 64, 20, 40, 28, -40, 28, -64, 20 )
 
-[node name="Player" index="0" instance=ExtResource( 1 )]
+[node name="Player" instance=ExtResource( 1 )]
 
 script = ExtResource( 2 )
 turnSpeed = 25.133

@@ -1,13 +1,14 @@
 extends Node2D
 
 var BarrierSegment = preload("res://BarrierSegment.gd")
+var RoadSegment = preload("res://src/RoadSegment.gd")
 var Checkpoint = preload("res://Checkpoint.gd")
 var Delauney = preload("res://Delauney.gd")
 
 #export(NodePath) var playerPath
 #onready var player = $"../YSort/Player"
 
-var initWps = 20
+var initWps = 12
 var points =  PoolVector2Array()
 var boundary = PoolVector2Array()
 var bIdxs = PoolIntArray()
@@ -28,9 +29,14 @@ func _ready():
   createValidWaypoints(initWps)
   var leftSide = wayPointsBorder(bIdxs, "left")
   var rightSide = wayPointsBorder(bIdxs, "right")
+  
+  var roadSegments = generateRoadSegments(leftSide, rightSide)
+  for segm in roadSegments:
+    get_parent().call_deferred("add_child_below_node", $"../TrackGenerator", segm)
+  
   var cp0Idx = 1
-  var cp1Idx = leftSide.size() / 3.0 + 2
-  var cp2Idx = leftSide.size() * 2.0/3.0 + 3
+  var cp1Idx = round((leftSide.size() / 3.0) / 3.0) * 3 + 1
+  var cp2Idx = round((leftSide.size() / 3.0) * 2.0 / 3.0) * 3 + 1
   get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp0Idx], rightSide[cp0Idx], 0))
   get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp1Idx], rightSide[cp1Idx], 1))
   get_parent().call_deferred("add_child", Checkpoint.new(leftSide[cp2Idx], rightSide[cp2Idx], 2))
@@ -43,7 +49,7 @@ func _ready():
     player.setStartPosition(points[bIdxs[0]], towards.angle())
     player.resetPosition()
     
-  $"../ObstacleSpawner".spawn(leftSide, rightSide)
+  $"../ObstacleSpawner".spawnOnGrid(leftSide, rightSide)
   
   set_process(true)
 
@@ -82,7 +88,7 @@ func createValidWaypoints(initWps):
 # Generates the track.
 # Method based on https://stackoverflow.com/a/14266101/804318
 func createWaypoints(initWps):
-  roadSize = 500
+  roadSize = 300
 #  minDist = 0.5 * side / sqrt(initWps) # always possible to place point
 #  roadSize = 0.5 * minDist
   minDist = 2 * roadSize
@@ -301,6 +307,14 @@ func wayPointsBorder(waypoints, side):
         var outerNext = roadSize * -toNext.tangent()
         border.push_back(thisPoint - outerNext)
   return border
+
+func generateRoadSegments(left, right):
+  var segments = []
+  var nrPoints = left.size()
+  for idx in left.size():
+    var points = [left[idx], left[(idx + 1) % nrPoints], right[(idx + 1) % nrPoints], right[idx]]
+    segments.append(RoadSegment.new(points, [Color(0.4, 0.4, 0.4)]))
+  return segments
 
 func _draw():
   pass
