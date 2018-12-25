@@ -6,7 +6,7 @@ export (float) var maxGas
 export (float) var turnSpeed
 export (float) var maxTurn
 
-
+var ghosting = false
 var ghostFuel = 0.0
 var gas = 0.0
 var turning = 0.0
@@ -28,8 +28,19 @@ func _ready():
 func control():
   pass
 
+func updateUI():
+  pass
+
 func _process(delta):
   control(delta)
+  if drifting && !ghosting:
+    ghostFuel = min(ghostFuel + 20 * delta, 100.0)
+    updateUI(ghostFuel)
+  if ghosting && ghostFuel > 0.0:
+    ghostFuel = max(0.0, ghostFuel - 50 * delta)
+    updateUI(ghostFuel)
+    if ghostFuel == 0:
+      tryGhosting(false)
 
 func _integrate_forces(state):  
   if not alive:
@@ -42,8 +53,8 @@ func _integrate_forces(state):
   var sideSpeed = abs(velocity.dot(right))
   if sideSpeed > 200.0:
     drifting = true
-    print("drifting")
-  elif sideSpeed < 0.1 || (gas == 0 && sideSpeed < 100.0):
+    print(applied_torque)
+  elif (sideSpeed < 50.0 && abs(applied_torque) < 1000.0):
     drifting = false
     
   # longitudinal forces
@@ -99,3 +110,17 @@ func resetPosition(state = null):
   self.linear_velocity = Vector2()
   self.angular_velocity = 0.0
   self.set_applied_force(Vector2())
+  
+func tryGhosting(ghosting):
+  if ghosting && ghostFuel > 0.0:
+    print(ghostFuel)
+    set_collision_mask_bit(0, false)
+    set_collision_layer_bit(0, false)
+    modulate.a = 0.3
+    self.ghosting = ghosting
+  elif !ghosting:
+    set_collision_mask_bit(0, true)
+    set_collision_layer_bit(0, true)
+    modulate.a = 1.0
+    self.ghosting = ghosting
+  

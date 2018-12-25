@@ -35,6 +35,6 @@ func _draw():
   for idx in nrOfSegments:
     var wp1 = points[pointOrder[idx % len(pointOrder)]]
     var wp2 = points[pointOrder[(idx + 1) % len(pointOrder)]]
-    draw_line(wp1, wp2, Color(255, 0, 0), 5)
+    draw_line(wp1, wp2, Color(1, 1, 0), 5)
   for point in points:
       draw_circle(point, 10, Color(1, 1, 0))

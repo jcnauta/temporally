@@ -7,6 +7,9 @@ var progress = 0
 var startTime
 var bestTime = null
 
+func setGhost(ghostFuel):
+  $"./GhostCharge".rect_size.x = ghostFuel
+
 func reachCheckpoint(checkIdx):
   if checkIdx == (prevCheck + 1) % 3:
     progress += 1

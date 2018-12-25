@@ -8,7 +8,7 @@ var Delauney = preload("res://Delauney.gd")
 #export(NodePath) var playerPath
 #onready var player = $"../YSort/Player"
 
-var initWps = 12
+var initWps = 13
 var points =  PoolVector2Array()
 var boundary = PoolVector2Array()
 var bIdxs = PoolIntArray()
@@ -22,8 +22,6 @@ var offPrev = null
 var offNext = null
 var minDist
 var roadSize
-
-var burnRuns = 0
 
 func _ready():
   createValidWaypoints(initWps)

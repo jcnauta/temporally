@@ -2,17 +2,17 @@ extends "res://Car.gd"
 
 export var id = 0
 
+func updateUI(ghostFuel):
+  var UIPath = NodePath("/root/Game/Viewports/VPC" + str(id) + "/VP" + str(id) + "/UI")
+  get_node(UIPath).setGhost(ghostFuel)
+
 func control(delta):
   if Input.is_action_just_pressed('reposition%s' % id):
     resetting = true
-  if Input.is_action_just_pressed('ghost%s' % id):
-    set_collision_mask_bit(0, false)
-    set_collision_layer_bit(0, false)
-    modulate.a = 0.3
-  elif Input.is_action_just_released('ghost%s' % id):
-    set_collision_mask_bit(0, true)
-    set_collision_layer_bit(0, true)
-    modulate.a = 1.0
+  if !ghosting && Input.is_action_just_pressed('ghost%s' % id):
+    tryGhosting(true)
+  elif ghosting && Input.is_action_just_released('ghost%s' % id):
+    tryGhosting(false)
   
   var tLeft = Input.is_action_pressed('turnLeft%s' % id)
   var tRight = Input.is_action_pressed('turnRight%s' % id)
@@ -25,6 +25,8 @@ func control(delta):
   elif Input.is_action_just_released('turnRight%s' % id):
     turning = max(0.0, turning)
   turning -= 2 * turning * delta
+  if Input.is_action_just_pressed('forward%s' % id):
+    drifting = false
   if Input.is_action_pressed('forward%s' % id):
     gas = gas + a * delta
   elif Input.is_action_just_released('forward%s' % id):
