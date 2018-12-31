@@ -53,7 +53,6 @@ func _integrate_forces(state):
   var sideSpeed = abs(velocity.dot(right))
   if sideSpeed > 200.0:
     drifting = true
-    print(applied_torque)
   elif (sideSpeed < 50.0 && abs(applied_torque) < 1000.0):
     drifting = false
     

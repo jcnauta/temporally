@@ -28,7 +28,7 @@ func _ready():
   var leftSide = wayPointsBorder(bIdxs, "left")
   var rightSide = wayPointsBorder(bIdxs, "right")
   
-  var roadSegments = generateRoadSegments(leftSide, rightSide)
+  var roadSegments = [] #generateRoadSegments(leftSide, rightSide)
   for segm in roadSegments:
     get_parent().call_deferred("add_child_below_node", $"../TrackGenerator", segm)
   

@@ -1,12 +1,14 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Game.gd" type="Script" id=1]
-[ext_resource path="res://TrackGenerator.gd" type="Script" id=2]
-[ext_resource path="res://Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://src/cars/player2.png" type="Texture" id=4]
-[ext_resource path="res://ObstacleSpawner.gd" type="Script" id=5]
-[ext_resource path="res://UI.gd" type="Script" id=6]
-[ext_resource path="res://CarCam.gd" type="Script" id=7]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://TrackGenerator.gd" type="Script" id=3]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/cars/player2.png" type="Texture" id=5]
+[ext_resource path="res://ObstacleSpawner.gd" type="Script" id=6]
+[ext_resource path="res://UI.gd" type="Script" id=7]
+[ext_resource path="res://CarCam.gd" type="Script" id=8]
+[ext_resource path="res://Spatial.tscn" type="PackedScene" id=9]
 
 [node name="Game" type="Node2D" index="0"]
 
@@ -95,17 +97,26 @@ shadow_atlas_quad_3 = 4
 
 [node name="World" type="Node" parent="Viewports/VPC1/VP1" index="0"]
 
-[node name="TrackGenerator" type="Node2D" parent="Viewports/VPC1/VP1/World" index="0"]
+[node name="3D_objects" type="Sprite" parent="Viewports/VPC1/VP1/World" index="0"]
 
-script = ExtResource( 2 )
+z_index = 4096
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 1600, 1600 )
+_sections_unfolded = [ "Region", "Transform", "Z Index" ]
+
+[node name="TrackGenerator" type="Node2D" parent="Viewports/VPC1/VP1/World" index="1"]
+
+visible = false
+script = ExtResource( 3 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="YSort" type="YSort" parent="Viewports/VPC1/VP1/World" index="1"]
+[node name="YSort" type="YSort" parent="Viewports/VPC1/VP1/World" index="2"]
 
 sort_enabled = true
 _sections_unfolded = [ "Sort" ]
 
-[node name="Player" parent="Viewports/VPC1/VP1/World/YSort" index="0" instance=ExtResource( 3 )]
+[node name="Player" parent="Viewports/VPC1/VP1/World/YSort" index="0" instance=ExtResource( 4 )]
 
 position = Vector2( -2, -2 )
 friction = 0.05
@@ -116,7 +127,7 @@ turnSpeed = 100.0
 maxTurn = 1.5
 id = 1
 
-[node name="Player2" parent="Viewports/VPC1/VP1/World/YSort" index="1" instance=ExtResource( 3 )]
+[node name="Player2" parent="Viewports/VPC1/VP1/World/YSort" index="1" instance=ExtResource( 4 )]
 
 editor/display_folded = true
 position = Vector2( -2, -2 )
@@ -130,11 +141,12 @@ id = 2
 
 [node name="Sprite" parent="Viewports/VPC1/VP1/World/YSort/Player2" index="0"]
 
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 
-[node name="ObstacleSpawner" type="Node2D" parent="Viewports/VPC1/VP1/World" index="2"]
+[node name="ObstacleSpawner" type="Node2D" parent="Viewports/VPC1/VP1/World" index="3"]
 
-script = ExtResource( 5 )
+visible = false
+script = ExtResource( 6 )
 
 [node name="UI" type="CanvasLayer" parent="Viewports/VPC1/VP1" index="1"]
 
@@ -143,7 +155,7 @@ offset = Vector2( 0, 0 )
 rotation = 0.0
 scale = Vector2( 1, 1 )
 transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-script = ExtResource( 6 )
+script = ExtResource( 7 )
 
 [node name="LabelLaps" type="Label" parent="Viewports/VPC1/VP1/UI" index="0"]
 
@@ -295,7 +307,7 @@ drag_margin_bottom = 0.2
 editor_draw_screen = true
 editor_draw_limits = false
 editor_draw_drag_margin = false
-script = ExtResource( 7 )
+script = ExtResource( 8 )
 _sections_unfolded = [ "Material", "Visibility" ]
 
 [node name="VPC2" type="ViewportContainer" parent="Viewports" index="1"]
@@ -350,7 +362,7 @@ offset = Vector2( 0, 0 )
 rotation = 0.0
 scale = Vector2( 1, 1 )
 transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-script = ExtResource( 6 )
+script = ExtResource( 7 )
 
 [node name="LabelLaps" type="Label" parent="Viewports/VPC2/VP2/UI" index="0"]
 
@@ -502,7 +514,48 @@ drag_margin_bottom = 0.2
 editor_draw_screen = true
 editor_draw_limits = false
 editor_draw_drag_margin = false
-script = ExtResource( 7 )
+script = ExtResource( 8 )
+
+[node name="Viewport" type="Viewport" parent="." index="2"]
+
+arvr = false
+size = Vector2( 300, 300 )
+own_world = false
+world = null
+transparent_bg = true
+msaa = 0
+hdr = true
+disable_3d = false
+usage = 2
+debug_draw = 0
+render_target_v_flip = false
+render_target_clear_mode = 0
+render_target_update_mode = 2
+audio_listener_enable_2d = false
+audio_listener_enable_3d = false
+physics_object_picking = false
+gui_disable_input = false
+gui_snap_controls_to_pixels = true
+shadow_atlas_size = 0
+shadow_atlas_quad_0 = 2
+shadow_atlas_quad_1 = 2
+shadow_atlas_quad_2 = 3
+shadow_atlas_quad_3 = 4
+
+[node name="Spatial" parent="Viewport" index="0" instance=ExtResource( 9 )]
+
+[node name="Camera" parent="Viewport/Spatial" index="0"]
+
+transform = Transform( 1, -6.51683e-07, 5.30863e-14, 5.30863e-14, 1.62921e-07, 1, -6.51683e-07, -1, 1.62921e-07, 0, 100, 0 )
+fov = 118.125
+near = 10.0
+far = 1000.0
+
+[node name="MeshInstance" parent="Viewport/Spatial" index="1"]
+
+transform = Transform( 100, 0, 0, 0, 100, 0, 0, 0, 100, 8200, 100, 200 )
+_sections_unfolded = [ "Geometry", "Transform", "material" ]
 
 
 [editable path="Viewports/VPC1/VP1/World/YSort/Player2"]
+[editable path="Viewport/Spatial"]

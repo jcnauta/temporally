@@ -3,7 +3,7 @@ extends Node2D
 var Obstacle = preload("res://Obstacle.tscn")
 
 func spawnOnGrid(leftSide, rightSide):
-  for idx in (leftSide.size() / 3):
+  for idx in 0: #(leftSide.size() / 3):
     var idxInPoints = 3 * idx + 2
     var nextIdxInPoints = (3 * idx + 3) % leftSide.size()
     var l1 = leftSide[idxInPoints]
